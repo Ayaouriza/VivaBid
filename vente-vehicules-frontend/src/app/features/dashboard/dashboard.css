@@ -242,3 +242,31 @@ header button:focus-visible {
     overflow-x: auto;
   }
 }
+.navbar {
+  display: flex;
+  gap: 4px;
+  padding: 0 40px;
+  background: #fff;
+  border-bottom: 1px solid var(--border);
+}
+
+.nav-item {
+  padding: 14px 20px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  background: none;
+  border: none;
+  border-bottom: 2.5px solid transparent;
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.nav-item:hover {
+  color: var(--ink);
+}
+
+.nav-item.active {
+  color: var(--navy-900);
+  border-bottom-color: var(--bronze-500);
+}
