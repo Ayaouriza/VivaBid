@@ -1,0 +1,231 @@
+:host {
+  display: block;
+  --navy-950: #0b1522;
+  --navy-900: #101f33;
+  --navy-800: #16293f;
+  --steel-400: #7d94a8;
+  --steel-100: #eef1f4;
+  --bronze-500: #b08a4e;
+  --bronze-400: #c9a06a;
+  --ink: #182432;
+  --ink-soft: #6b7785;
+  --border: #e2e6eb;
+  --success-bg: #eaf6ef;
+  --success-text: #1e7d4f;
+  --error-bg: #fdecea;
+  --error-text: #c0392b;
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+}
+
+.import-container {
+  max-width: 720px;
+}
+
+.import-header h2 {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--ink);
+  margin: 0 0 6px;
+}
+
+.import-header .subtitle {
+  font-size: 14px;
+  color: var(--ink-soft);
+  margin: 0 0 24px;
+}
+
+.btn-template {
+  padding: 10px 18px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--navy-900);
+  background: #fff;
+  border: 1.5px solid var(--navy-900);
+  border-radius: 7px;
+  cursor: pointer;
+  margin-bottom: 24px;
+  transition: background 0.15s ease;
+}
+
+.btn-template:hover {
+  background: var(--steel-100);
+}
+
+.upload-zone {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 20px;
+  background: #fff;
+  border: 1.5px dashed var(--border);
+  border-radius: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.upload-label {
+  flex: 1;
+  min-width: 200px;
+  padding: 10px 14px;
+  font-size: 13.5px;
+  color: var(--ink-soft);
+  background: var(--steel-100);
+  border-radius: 7px;
+  cursor: pointer;
+  text-align: center;
+}
+
+.file-name {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+input[type='file'] {
+  display: none;
+}
+
+.btn-import {
+  padding: 10px 22px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #fff;
+  background: var(--navy-900);
+  border: none;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.btn-import:hover:not(:disabled) {
+  background: var(--navy-800);
+}
+
+.btn-import:disabled {
+  background: #b7c0cb;
+  cursor: not-allowed;
+}
+
+.error-box {
+  padding: 14px 18px;
+  background: var(--error-bg);
+  color: var(--error-text);
+  border-radius: 8px;
+  font-size: 13.5px;
+  margin-bottom: 20px;
+}
+
+.resultat-box {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 24px;
+}
+
+.resultat-box h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ink);
+  margin: 0 0 18px;
+}
+
+.resultat-stats {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.stat {
+  flex: 1;
+  padding: 16px;
+  background: var(--steel-100);
+  border-radius: 8px;
+  text-align: center;
+}
+
+.stat-value {
+  display: block;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.stat-label {
+  display: block;
+  font-size: 12px;
+  color: var(--ink-soft);
+  margin-top: 4px;
+}
+
+.stat-success .stat-value {
+  color: var(--success-text);
+}
+
+.stat-error .stat-value {
+  color: var(--error-text);
+}
+
+.erreurs-section p {
+  font-size: 13.5px;
+  color: var(--ink-soft);
+  margin: 0 0 14px;
+}
+
+.btn-erreurs {
+  padding: 9px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--bronze-500);
+  background: #fff;
+  border: 1.5px solid var(--bronze-500);
+  border-radius: 7px;
+  cursor: pointer;
+  margin-bottom: 18px;
+  transition: background 0.15s ease;
+}
+
+.btn-erreurs:hover {
+  background: #fdf6ec;
+}
+
+.erreurs-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  margin-bottom: 20px;
+}
+
+.erreurs-table th {
+  text-align: left;
+  padding: 10px 12px;
+  background: var(--steel-100);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: var(--ink-soft);
+}
+
+.erreurs-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  color: var(--ink);
+}
+
+.erreur-msg {
+  color: var(--error-text);
+  font-size: 12.5px;
+}
+
+.btn-nouveau {
+  padding: 9px 18px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  background: var(--steel-100);
+  border: none;
+  border-radius: 7px;
+  cursor: pointer;
+}
+
+.btn-nouveau:hover {
+  background: #e2e7ec;
+}

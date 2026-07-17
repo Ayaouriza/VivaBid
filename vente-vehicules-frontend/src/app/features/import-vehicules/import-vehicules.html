@@ -1,0 +1,84 @@
+<div class="import-container">
+
+  <div class="import-header">
+    <h2>Importer des véhicules</h2>
+    <p class="subtitle">Chargez un fichier Excel selon le modèle fourni pour ajouter plusieurs véhicules à la fois.</p>
+  </div>
+
+  <button class="btn-template" (click)="telechargerTemplate()">
+    Télécharger le modèle Excel
+  </button>
+
+  <div class="upload-zone">
+    <label for="file-input" class="upload-label">
+      <span *ngIf="!selectedFile()">Sélectionner un fichier Excel (.xlsx)</span>
+      <span *ngIf="selectedFile()" class="file-name">{{ selectedFile()?.name }}</span>
+    </label>
+    <input
+      id="file-input"
+      type="file"
+      accept=".xlsx"
+      (change)="onFileSelected($event)"
+    />
+
+    <button
+      class="btn-import"
+      [disabled]="!selectedFile() || isUploading()"
+      (click)="onImport()"
+    >
+      {{ isUploading() ? 'Import en cours...' : 'Importer' }}
+    </button>
+  </div>
+
+  <div *ngIf="errorMessage()" class="error-box">
+    {{ errorMessage() }}
+  </div>
+
+  <div *ngIf="resultat()" class="resultat-box">
+    <h3>Résultat de l'import</h3>
+
+    <div class="resultat-stats">
+      <div class="stat">
+        <span class="stat-value">{{ resultat()?.totalLignes }}</span>
+        <span class="stat-label">Lignes lues</span>
+      </div>
+      <div class="stat stat-success">
+        <span class="stat-value">{{ resultat()?.nombreImportes }}</span>
+        <span class="stat-label">Importés</span>
+      </div>
+      <div class="stat stat-error">
+        <span class="stat-value">{{ resultat()?.nombreErreurs }}</span>
+        <span class="stat-label">Erreurs</span>
+      </div>
+    </div>
+
+    <div *ngIf="(resultat()?.nombreErreurs ?? 0) > 0" class="erreurs-section">
+      <p>Certaines lignes n'ont pas pu être importées. Téléchargez le détail, corrigez, et réimportez.</p>
+      <button class="btn-erreurs" (click)="telechargerErreurs()">
+        Télécharger les lignes en erreur
+      </button>
+
+      <table class="erreurs-table">
+        <thead>
+          <tr>
+            <th>Ligne</th>
+            <th>Immatriculation</th>
+            <th>Erreur</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let ligne of resultat()?.lignesEnErreur">
+            <td>{{ ligne.numeroLigne }}</td>
+            <td>{{ ligne.immatriculation || '—' }}</td>
+            <td class="erreur-msg">{{ ligne.messageErreur }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <button class="btn-nouveau" (click)="resetImport()">
+      Importer un autre fichier
+    </button>
+  </div>
+
+</div>
