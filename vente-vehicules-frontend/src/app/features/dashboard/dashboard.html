@@ -1,0 +1,60 @@
+<div class="dashboard">
+  <header>
+    <span>Bienvenue, {{ username }}</span>
+    <button (click)="logout()">Déconnexion</button>
+  </header>
+
+  <div *ngIf="role === Role.RESPONSABLE_SI">
+    <h2>Espace Responsable SI</h2>
+    <p>Gestion des comptes utilisateurs et des rôles.</p>
+  </div>
+
+  <div *ngIf="role === Role.RESPONSABLE_BACK_OFFICE">
+    <h2>Espace Responsable Back Office</h2>
+    <p>Validation des ventes et des accusés de réception.</p>
+  </div>
+
+  <div *ngIf="role === Role.AGENT_PARC">
+    <h2>Espace Agent de Parc</h2>
+    <p>Saisie des prix adjugés.</p>
+  </div>
+
+  <div *ngIf="role === Role.AGENT_SAISIE" class="vehicules-section">
+    <h2>Inventaire des véhicules</h2>
+
+    <div *ngIf="isLoadingVehicules()" class="state-message">Chargement...</div>
+    <div *ngIf="vehiculesError()" class="state-message error">{{ vehiculesError() }}</div>
+
+    <table *ngIf="!isLoadingVehicules() && !vehiculesError()" class="vehicules-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Immat.</th>
+          <th>Ville</th>
+          <th>Marque | Modèle</th>
+          <th>Année</th>
+          <th>VIN</th>
+          <th># Clés</th>
+          <th>Prix plancher</th>
+          <th>Statut</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let v of vehicules()">
+          <td><span class="badge-id">{{ v.id }}</span></td>
+          <td>{{ v.immatriculation }}</td>
+          <td>{{ v.ville || '—' }}</td>
+          <td>{{ v.marque }} | {{ v.modele }}</td>
+          <td>{{ v.anneeMec || '—' }}</td>
+          <td>{{ v.vin || '—' }}</td>
+          <td>{{ v.nombreCles ?? '—' }}</td>
+          <td>{{ v.prixPlancher ? (v.prixPlancher | number) + ' DH' : '—' }}</td>
+          <td><span class="badge-statut" [class]="v.statut">{{ v.statut }}</span></td>
+        </tr>
+        <tr *ngIf="vehicules().length === 0">
+          <td colspan="9" class="state-message">Aucun véhicule enregistré.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

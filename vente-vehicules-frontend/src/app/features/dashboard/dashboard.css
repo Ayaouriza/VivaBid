@@ -1,0 +1,244 @@
+/* ===== Design tokens (cohérents avec login.css) ===== */
+:host {
+  display: block;
+  min-height: 100vh;
+  --navy-950: #0b1522;
+  --navy-900: #101f33;
+  --navy-800: #16293f;
+  --navy-700: #22384f;
+  --steel-400: #7d94a8;
+  --steel-200: #c3d0da;
+  --steel-100: #eef1f4;
+  --bronze-500: #b08a4e;
+  --bronze-400: #c9a06a;
+  --bg-light: #f5f6f8;
+  --ink: #182432;
+  --ink-soft: #6b7785;
+  --border: #e2e6eb;
+  --success-bg: #eaf6ef;
+  --success-text: #1e7d4f;
+  --warning-bg: #fdf3e4;
+  --warning-text: #a66a1b;
+  --neutral-bg: #eef1f4;
+  --neutral-text: #52606d;
+  --error: #c0392b;
+  --font-display: 'Segoe UI', 'Inter', system-ui, sans-serif;
+  --font-body: 'Inter', 'Segoe UI', system-ui, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.dashboard {
+  min-height: 100vh;
+  background: var(--bg-light);
+  font-family: var(--font-body);
+  color: var(--ink);
+}
+
+/* ===== Header ===== */
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(160deg, var(--navy-950) 0%, var(--navy-800) 100%);
+  padding: 18px 40px;
+  color: #fff;
+}
+
+header span {
+  font-size: 14.5px;
+  font-weight: 500;
+  letter-spacing: 0.2px;
+}
+
+header span::before {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--bronze-400);
+  margin-right: 10px;
+  vertical-align: middle;
+}
+
+header button {
+  padding: 9px 18px;
+  font-size: 13.5px;
+  font-weight: 600;
+  font-family: var(--font-body);
+  color: var(--navy-950);
+  background: var(--steel-200);
+  border: none;
+  border-radius: 7px;
+  cursor: pointer;
+  letter-spacing: 0.2px;
+  transition: background 0.15s ease, transform 0.05s ease;
+}
+
+header button:hover {
+  background: #fff;
+}
+
+header button:active {
+  transform: translateY(1px);
+}
+
+header button:focus-visible {
+  outline: 2px solid var(--bronze-500);
+  outline-offset: 2px;
+}
+
+/* ===== Role sections (generic wrapper) ===== */
+.dashboard > div:not(header) {
+  padding: 36px 40px;
+}
+
+.dashboard h2 {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--ink);
+  margin: 0 0 6px;
+}
+
+.dashboard > div > p {
+  font-size: 14px;
+  color: var(--ink-soft);
+  margin: 0;
+}
+
+/* ===== Vehicules section ===== */
+.vehicules-section h2 {
+  margin-bottom: 4px;
+}
+
+.vehicules-section > p,
+.vehicules-section .subtitle {
+  color: var(--ink-soft);
+  font-size: 14px;
+  margin: 0 0 24px;
+}
+
+.state-message {
+  padding: 14px 18px;
+  font-size: 14px;
+  color: var(--ink-soft);
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-top: 12px;
+}
+
+.state-message.error {
+  background: #fdecea;
+  border-color: #f3c6c1;
+  color: var(--error);
+}
+
+/* ===== Table ===== */
+.vehicules-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-top: 20px;
+  font-size: 13.5px;
+  box-shadow: 0 1px 2px rgba(16, 31, 51, 0.04);
+}
+
+.vehicules-table thead {
+  background: var(--steel-100);
+}
+
+.vehicules-table th {
+  text-align: left;
+  padding: 13px 16px;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.vehicules-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  color: var(--ink);
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.vehicules-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.vehicules-table tbody tr:hover {
+  background: #fafbfc;
+}
+
+.vehicules-table td:has(.state-message) {
+  white-space: normal;
+  text-align: center;
+}
+
+/* ===== Badges ===== */
+.badge-id {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  padding: 3px 9px;
+  background: var(--bronze-500);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  border-radius: 20px;
+}
+
+.badge-statut {
+  display: inline-block;
+  padding: 4px 11px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  border-radius: 20px;
+  text-transform: capitalize;
+}
+
+.badge-statut.EN_STOCK {
+  background: var(--neutral-bg);
+  color: var(--neutral-text);
+}
+
+.badge-statut.EN_VENTE {
+  background: var(--warning-bg);
+  color: var(--warning-text);
+}
+
+.badge-statut.VENDU {
+  background: var(--success-bg);
+  color: var(--success-text);
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 900px) {
+  header {
+    padding: 16px 20px;
+  }
+
+  .dashboard > div:not(header) {
+    padding: 24px 20px;
+  }
+
+  .vehicules-table {
+    display: block;
+    overflow-x: auto;
+  }
+}
