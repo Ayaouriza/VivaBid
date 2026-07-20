@@ -36,7 +36,7 @@ public class Vehicule {
 
     private Integer nombreCles;
 
-    private Double prixPlancher; // prix minimum fixé par l'expert
+    private Double prixExpert; // prix minimum fixé par l'expert
 
     @Enumerated(EnumType.STRING)
     private StatutVehicule statut = StatutVehicule.EN_STOCK;

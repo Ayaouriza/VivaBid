@@ -22,7 +22,7 @@ public class VehiculeResponse {
     private Integer anneeMec;
     private String vin;
     private Integer nombreCles;
-    private Double prixPlancher;
+    private Double prixExpert;
     private StatutVehicule statut;
     private String carteGrisePath;
     private String docsJustificatifsPath;

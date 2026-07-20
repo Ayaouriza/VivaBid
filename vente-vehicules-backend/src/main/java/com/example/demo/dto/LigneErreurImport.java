@@ -19,6 +19,6 @@ public class LigneErreurImport {
     private String anneeMec;
     private String vin;
     private String nombreCles;
-    private String prixPlancher;
+    private String prixExpert;
     private String messageErreur;
 }

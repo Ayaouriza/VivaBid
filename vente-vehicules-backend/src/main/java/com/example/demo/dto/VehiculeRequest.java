@@ -18,5 +18,5 @@ public class VehiculeRequest {
     private Integer anneeMec;
     private String vin;
     private Integer nombreCles;
-    private Double prixPlancher;
+    private Double prixExpert;
 }
