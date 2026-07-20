@@ -58,7 +58,7 @@ public class VehiculeService {
         vehicule.setAnneeMec(request.getAnneeMec());
         vehicule.setVin(request.getVin());
         vehicule.setNombreCles(request.getNombreCles());
-        vehicule.setPrixPlancher(request.getPrixPlancher());
+        vehicule.setPrixExpert(request.getPrixExpert());
         vehicule.setStatut(StatutVehicule.EN_STOCK);
 
         Vehicule saved = vehiculeRepository.save(vehicule);
@@ -75,7 +75,7 @@ public class VehiculeService {
                 vehicule.getAnneeMec(),
                 vehicule.getVin(),
                 vehicule.getNombreCles(),
-                vehicule.getPrixPlancher(),
+                vehicule.getPrixExpert(),
                 vehicule.getStatut(),
                 vehicule.getCarteGrisePath(),
                 vehicule.getDocsJustificatifsPath(),
@@ -114,7 +114,7 @@ public class VehiculeService {
             String anneeMecStr = getCellAsString(row, 4);
             String vin = getCellAsString(row, 5);
             String nombreClesStr = getCellAsString(row, 6);
-            String prixPlancherStr = getCellAsString(row, 7);
+            String prixExpertStr = getCellAsString(row, 7);
 
             List<String> erreurs = new ArrayList<>();
 
@@ -185,13 +185,13 @@ public class VehiculeService {
             }
 
             // ----- Validation prix plancher -----
-            Double prixPlancher = null;
-            if (prixPlancherStr.isBlank()) {
+            Double prixExpert = null;
+            if (prixExpertStr.isBlank()) {
                 erreurs.add("Prix plancher vide");
             } else {
                 try {
-                    prixPlancher = Double.parseDouble(prixPlancherStr);
-                    if (prixPlancher <= 0) {
+                    prixExpert = Double.parseDouble(prixExpertStr);
+                    if (prixExpert <= 0) {
                         erreurs.add("Prix plancher doit être positif");
                     }
                 } catch (NumberFormatException e) {
@@ -203,7 +203,7 @@ public class VehiculeService {
             if (!erreurs.isEmpty()) {
                 lignesEnErreur.add(new LigneErreurImport(
                         numeroLigneExcel, immatriculation, ville, marque, modele,
-                        anneeMecStr, vin, nombreClesStr, prixPlancherStr,
+                        anneeMecStr, vin, nombreClesStr, prixExpertStr,
                         String.join(" ; ", erreurs)
                 ));
                 continue;
@@ -218,7 +218,7 @@ public class VehiculeService {
             vehicule.setAnneeMec(anneeMec);
             vehicule.setVin(vin);
             vehicule.setNombreCles(nombreCles);
-            vehicule.setPrixPlancher(prixPlancher);
+            vehicule.setPrixExpert(prixExpert);
             vehicule.setStatut(StatutVehicule.EN_STOCK);
 
             vehiculeRepository.save(vehicule);
@@ -274,7 +274,7 @@ public byte[] genererFichierErreurs(List<LigneErreurImport> lignesEnErreur) {
 
         String[] headers = {
                 "Immatriculation", "Ville", "Marque", "Modele",
-                "AnneeMec", "VIN", "NombreCles", "PrixPlancher", "Erreur"
+                "AnneeMec", "VIN", "NombreCles", "PrixExpert", "Erreur"
         };
 
         Row headerRow = sheet.createRow(0);
@@ -299,7 +299,7 @@ public byte[] genererFichierErreurs(List<LigneErreurImport> lignesEnErreur) {
             row.createCell(4).setCellValue(ligne.getAnneeMec());
             row.createCell(5).setCellValue(ligne.getVin());
             row.createCell(6).setCellValue(ligne.getNombreCles());
-            row.createCell(7).setCellValue(ligne.getPrixPlancher());
+            row.createCell(7).setCellValue(ligne.getPrixExpert());
             row.createCell(8).setCellValue(ligne.getMessageErreur());
         }
 
@@ -323,7 +323,7 @@ public byte[] genererTemplateVierge() {
 
         String[] headers = {
                 "Immatriculation", "Ville", "Marque", "Modele",
-                "AnneeMec", "VIN", "NombreCles", "PrixPlancher"
+                "AnneeMec", "VIN", "NombreCles", "PrixExpert"
         };
 
         Row headerRow = sheet.createRow(0);

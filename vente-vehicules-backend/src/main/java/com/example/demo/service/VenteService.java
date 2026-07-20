@@ -1,0 +1,106 @@
+package com.example.demo.service;
+
+import com.example.demo.dto.VehiculeSimpleResponse;
+import com.example.demo.dto.VenteRequest;
+import com.example.demo.dto.VenteResponse;
+import com.example.demo.entity.StatutVente;
+import com.example.demo.entity.Vehicule;
+import com.example.demo.entity.Vente;
+import com.example.demo.repository.VehiculeRepository;
+import com.example.demo.repository.VenteRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+public class VenteService {
+
+    private final VenteRepository venteRepository;
+    private final VehiculeRepository vehiculeRepository;
+
+    public List<VenteResponse> getAllVentes() {
+        return venteRepository.findAllByOrderByDateVenteDesc()
+                .stream()
+                .map(this::toResponse)
+                .toList();
+    }
+
+    public VenteResponse getVenteById(Long id) {
+        Vente vente = venteRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Vente introuvable avec l'id : " + id));
+        return toResponse(vente);
+    }
+
+    public VenteResponse createVente(VenteRequest request) {
+        Vente vente = new Vente();
+        vente.setDateVente(request.getDateVente());
+        vente.setStatut(StatutVente.PLANIFIEE);
+
+        Vente saved = venteRepository.save(vente);
+        return toResponse(saved);
+    }
+
+    public List<VehiculeSimpleResponse> getVehiculesDisponibles() {
+        return vehiculeRepository.findVehiculesDisponiblesPourVente()
+                .stream()
+                .map(this::toSimpleResponse)
+                .toList();
+    }
+
+    public VenteResponse ajouterVehicule(Long venteId, Long vehiculeId) {
+        Vente vente = venteRepository.findById(venteId)
+                .orElseThrow(() -> new RuntimeException("Vente introuvable"));
+
+        Vehicule vehicule = vehiculeRepository.findById(vehiculeId)
+                .orElseThrow(() -> new RuntimeException("Véhicule introuvable"));
+
+        boolean dejaAffecte = venteRepository.findByStatut(StatutVente.PLANIFIEE).stream()
+                .anyMatch(v -> !v.getId().equals(venteId) && v.getVehicules().contains(vehicule));
+
+        if (dejaAffecte) {
+            throw new RuntimeException("Ce véhicule est déjà affecté à une autre vente active.");
+        }
+
+        vente.getVehicules().add(vehicule);
+        Vente saved = venteRepository.save(vente);
+        return toResponse(saved);
+    }
+
+    public VenteResponse retirerVehicule(Long venteId, Long vehiculeId) {
+        Vente vente = venteRepository.findById(venteId)
+                .orElseThrow(() -> new RuntimeException("Vente introuvable"));
+
+        vente.getVehicules().removeIf(v -> v.getId().equals(vehiculeId));
+
+        Vente saved = venteRepository.save(vente);
+        return toResponse(saved);
+    }
+
+    private VenteResponse toResponse(Vente vente) {
+        List<VehiculeSimpleResponse> vehicules = vente.getVehicules()
+                .stream()
+                .map(this::toSimpleResponse)
+                .toList();
+
+        return new VenteResponse(
+                vente.getId(),
+                vente.getDateVente(),
+                vente.getStatut(),
+                vehicules,
+                vente.getDateCreation()
+        );
+    }
+
+    private VehiculeSimpleResponse toSimpleResponse(Vehicule vehicule) {
+        return new VehiculeSimpleResponse(
+                vehicule.getId(),
+                vehicule.getImmatriculation(),
+                vehicule.getVille(),
+                vehicule.getMarque(),
+                vehicule.getModele(),
+                vehicule.getPrixExpert()
+        );
+    }
+}
