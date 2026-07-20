@@ -21,7 +21,7 @@ public class VenteController {
     public ResponseEntity<List<VenteResponse>> getAllVentes() {
         return ResponseEntity.ok(venteService.getAllVentes());
     }
-
+    
     @GetMapping("/{id}")
     public ResponseEntity<VenteResponse> getVenteById(@PathVariable Long id) {
         return ResponseEntity.ok(venteService.getVenteById(id));
