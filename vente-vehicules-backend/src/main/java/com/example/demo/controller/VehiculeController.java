@@ -66,4 +66,17 @@ public class VehiculeController {
             .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=template_vehicules.xlsx")
             .body(resource);
     }
+    @PutMapping("/{id}")
+public ResponseEntity<VehiculeResponse> updateVehicule(
+        @PathVariable Long id,
+        @RequestBody VehiculeRequest request) {
+    VehiculeResponse updated = vehiculeService.updateVehicule(id, request);
+    return ResponseEntity.ok(updated);
+}
+
+@DeleteMapping("/{id}")
+public ResponseEntity<Void> deleteVehicule(@PathVariable Long id) {
+    vehiculeService.deleteVehicule(id);
+    return ResponseEntity.noContent().build();
+}
 }

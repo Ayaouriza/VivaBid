@@ -34,6 +34,10 @@ public class VenteService {
     }
 
     public VenteResponse createVente(VenteRequest request) {
+        if (request.getDateVente() == null || request.getDateVente().isBefore(java.time.LocalDateTime.now())) {
+            throw new RuntimeException("La date de la vente ne peut pas être dans le passé.");
+        }
+
         Vente vente = new Vente();
         vente.setDateVente(request.getDateVente());
         vente.setStatut(StatutVente.PLANIFIEE);
@@ -84,22 +88,34 @@ public class VenteService {
                 .map(this::toSimpleResponse)
                 .toList();
 
+        StatutVente statutAffiche = calculerStatutReel(vente);
+
         return new VenteResponse(
                 vente.getId(),
                 vente.getDateVente(),
-                vente.getStatut(),
+                statutAffiche,
                 vehicules,
                 vente.getDateCreation()
         );
+    }
+
+    private StatutVente calculerStatutReel(Vente vente) {
+        if (vente.getStatut() == StatutVente.TERMINEE) {
+            return StatutVente.TERMINEE;
+        }
+
+        if (vente.getDateVente().isAfter(java.time.LocalDateTime.now())) {
+            return StatutVente.PLANIFIEE;
+        } else {
+            return StatutVente.EN_COURS;
+        }
     }
 
     private VehiculeSimpleResponse toSimpleResponse(Vehicule vehicule) {
         return new VehiculeSimpleResponse(
                 vehicule.getId(),
                 vehicule.getImmatriculation(),
-                vehicule.getVille(),
-                vehicule.getMarque(),
-                vehicule.getModele(),
+                vehicule.getMarqueModele(),
                 vehicule.getPrixExpert()
         );
     }

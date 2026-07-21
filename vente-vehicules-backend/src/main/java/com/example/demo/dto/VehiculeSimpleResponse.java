@@ -13,8 +13,6 @@ public class VehiculeSimpleResponse {
 
     private Long id;
     private String immatriculation;
-    private String ville;
-    private String marque;
-    private String modele;
+    private String marqueModele;
     private Double prixExpert;
 }

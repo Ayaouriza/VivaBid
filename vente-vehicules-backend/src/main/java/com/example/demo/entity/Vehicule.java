@@ -6,6 +6,9 @@ import lombok.Setter;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "vehicules")
 @Getter
@@ -21,32 +24,59 @@ public class Vehicule {
     @Column(nullable = false, unique = true)
     private String immatriculation;
 
-    private String ville;
+    @Column(nullable = false)
+    private String contrat;
 
     @Column(nullable = false)
-    private String marque;
+    private String produit;
 
     @Column(nullable = false)
-    private String modele;
+    private String situation;
 
-    private Integer anneeMec; // année de mise en circulation
+    @Column(nullable = false)
+    private String marqueModele;
 
-    @Column(unique = true)
-    private String vin;
+    @Column(nullable = false)
+    private String carburant;
 
+    @Column(nullable = false)
+    private String kilometrage; // texte libre : nombre ou "sans clé"
+
+    @Column(nullable = false)
     private Integer nombreCles;
 
-    private Double prixExpert; // prix minimum fixé par l'expert
+    @Column(nullable = false)
+    private LocalDate dateMec;
+
+    @Column(nullable = false)
+    private LocalDate dateRecuperation;
+
+    @Column(nullable = false)
+    private LocalDate dateVente;
+
+    @Column(nullable = false)
+    private Integer sejour;
+
+    @Column(nullable = false)
+    private Double encImp;
+
+    @Column(nullable = false)
+    private Double prixAchat;
+
+    @Column(nullable = false)
+    private Double prixExpert;
+
+    private Double vep; // optionnel à l'import, rempli après la 1ère tentative de vente
+
+    private Double difExp; // calculé automatiquement (prixExpert - vep)
+
+    private String acheteur; // optionnel, rempli après vente
 
     @Enumerated(EnumType.STRING)
     private StatutVehicule statut = StatutVehicule.EN_STOCK;
 
-    private String carteGrisePath;   // chemin du fichier scanné
     private String docsJustificatifsPath;
 
-    // Photos : relation séparée (un véhicule a plusieurs photos)
-    // On l'ajoutera dans une V2 avec @OneToMany si besoin
-
     @Column(updatable = false)
-    private java.time.LocalDateTime dateCreation = java.time.LocalDateTime.now();
+    private LocalDateTime dateCreation = LocalDateTime.now();
 }

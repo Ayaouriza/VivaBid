@@ -14,11 +14,7 @@ public interface VehiculeRepository extends JpaRepository<Vehicule, Long> {
 
     boolean existsByImmatriculation(String immatriculation);
 
-    boolean existsByVin(String vin);
-
     List<Vehicule> findByStatut(StatutVehicule statut);
-
-    List<Vehicule> findByVille(String ville);
 
     @Query(
         "SELECT v FROM Vehicule v WHERE v.statut = 'EN_STOCK' " +

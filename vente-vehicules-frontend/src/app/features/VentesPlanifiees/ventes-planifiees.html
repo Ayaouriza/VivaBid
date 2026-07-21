@@ -1,0 +1,74 @@
+<div class="ventes-container">
+
+  <div class="ventes-header">
+    <h2>Ventes planifiées</h2>
+    <p class="subtitle">Planifiez une session de vente aux enchères et sélectionnez les véhicules concernés.</p>
+  </div>
+
+  <div class="creation-bar">
+   <input type="date" [ngModel]="nouvelleDate()" (ngModelChange)="nouvelleDate.set($event)" name="dateVente" />
+    <input type="time" [ngModel]="nouvelleHeure()" (ngModelChange)="nouvelleHeure.set($event)" name="heureVente" />
+    <button
+      class="btn-create"
+      [disabled]="!nouvelleDate() || !nouvelleHeure() || isCreating()"
+      (click)="onCreateVente()"
+    >
+      {{ isCreating() ? 'Création...' : 'Planifier une vente' }}
+    </button>
+  </div>
+
+  <div *ngIf="isLoading()" class="state-message">Chargement...</div>
+  <div *ngIf="errorMessage()" class="state-message error">{{ errorMessage() }}</div>
+
+  <div class="ventes-list" *ngIf="!isLoading() && !errorMessage()">
+
+    <div *ngFor="let vente of ventes()" class="vente-card">
+      <div class="vente-card-header">
+        <div>
+          <span class="vente-date">{{ vente.dateVente | date:'dd/MM/yyyy à HH:mm' }}</span>
+          <span class="badge-statut" [class]="vente.statut">{{ vente.statut }}</span>
+        </div>
+        <button class="btn-add-vehicule" (click)="ouvrirPopupAjout(vente)">
+          + Ajouter des véhicules
+        </button>
+      </div>
+
+      <div class="vente-vehicules" *ngIf="vente.vehicules.length > 0; else aucunVehicule">
+        <div *ngFor="let v of vente.vehicules" class="vehicule-chip">
+          <span>{{ v.immatriculation }} — {{ v.marque }} {{ v.modele }}</span>
+          <button class="btn-remove" (click)="retirerVehicule(vente, v.id)">×</button>
+        </div>
+      </div>
+      <ng-template #aucunVehicule>
+        <p class="empty-text">Aucun véhicule ajouté pour l'instant.</p>
+      </ng-template>
+    </div>
+
+    <div *ngIf="ventes().length === 0" class="state-message">Aucune vente planifiée pour le moment.</div>
+  </div>
+
+  <div class="popup-overlay" *ngIf="showPopup()" (click)="fermerPopup()">
+    <div class="popup-content" (click)="$event.stopPropagation()">
+      <div class="popup-header">
+        <h3>Sélectionner des véhicules</h3>
+        <button class="btn-close" (click)="fermerPopup()">×</button>
+      </div>
+
+      <div *ngIf="isLoadingDisponibles()" class="state-message">Chargement...</div>
+
+      <div class="popup-list" *ngIf="!isLoadingDisponibles()">
+        <div *ngFor="let v of vehiculesDisponibles()" class="popup-item">
+          <div class="popup-item-info">
+            <span class="popup-item-title">{{ v.immatriculation }} — {{ v.marque }} {{ v.modele }}</span>
+            <span class="popup-item-sub">{{ v.ville || '—' }} · {{ v.prixExpert ? (v.prixExpert | number) + ' DH' : '—' }}</span>
+          </div>
+          <button class="btn-select" (click)="ajouterVehicule(v.id)">Ajouter</button>
+        </div>
+        <div *ngIf="vehiculesDisponibles().length === 0" class="state-message">
+          Aucun véhicule disponible pour le moment.
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

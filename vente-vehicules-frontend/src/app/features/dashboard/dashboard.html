@@ -19,6 +19,13 @@
     >
       Importer un fichier Excel
     </button>
+    <button
+      class="nav-item"
+      [class.active]="activeTab() === 'ventes'"
+      (click)="setActiveTab('ventes')"
+    >
+      Ventes planifiées
+    </button>
   </nav>
 
   <div *ngIf="role === Role.RESPONSABLE_SI">
@@ -45,7 +52,7 @@
         <input
           type="text"
           class="search-input"
-          placeholder="Rechercher (immatriculation, marque, modèle, ville, VIN)..."
+          placeholder="Rechercher (immatriculation, marque/modèle, contrat, acheteur)..."
           (input)="onSearchChange($event)"
         />
 
@@ -54,47 +61,200 @@
           <option value="EN_STOCK">En stock</option>
           <option value="EN_VENTE">En vente</option>
           <option value="VENDU">Vendu</option>
+          <option value="NON_VENDU">Non vendu</option>
         </select>
       </div>
 
       <div *ngIf="isLoadingVehicules()" class="state-message">Chargement...</div>
       <div *ngIf="vehiculesError()" class="state-message error">{{ vehiculesError() }}</div>
 
+      <div class="table-wrapper">
       <table *ngIf="!isLoadingVehicules() && !vehiculesError()" class="vehicules-table">
         <thead>
           <tr>
             <th>ID</th>
             <th>Immat.</th>
-            <th>Ville</th>
+            <th>Contrat</th>
+            <th>Produit</th>
+            <th>Situation</th>
             <th>Marque | Modèle</th>
-            <th>Année</th>
-            <th>VIN</th>
+            <th>Carburant</th>
+            <th>Km</th>
             <th># Clés</th>
-            <th>Prix plancher</th>
+            <th>Date MEC</th>
+            <th>Date récup.</th>
+            <th>Date vente</th>
+            <th>Séjour</th>
+            <th>Enc.Imp</th>
+            <th>Prix achat</th>
+            <th>Prix expert</th>
+            <th>Vep</th>
+            <th>Dif. Exp</th>
+            <th>Acheteur</th>
             <th>Statut</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let v of filteredVehicules()">
             <td><span class="badge-id">{{ v.id }}</span></td>
             <td>{{ v.immatriculation }}</td>
-            <td>{{ v.ville || '—' }}</td>
-            <td>{{ v.marque }} | {{ v.modele }}</td>
-            <td>{{ v.anneeMec || '—' }}</td>
-            <td>{{ v.vin || '—' }}</td>
+            <td>{{ v.contrat || '—' }}</td>
+            <td>{{ v.produit || '—' }}</td>
+            <td>{{ v.situation || '—' }}</td>
+            <td>{{ v.marqueModele }}</td>
+            <td>{{ v.carburant || '—' }}</td>
+            <td>{{ v.kilometrage || '—' }}</td>
             <td>{{ v.nombreCles ?? '—' }}</td>
-            <td>{{ v.prixPlancher ? (v.prixPlancher | number) + ' DH' : '—' }}</td>
+            <td>{{ v.dateMec || '—' }}</td>
+            <td>{{ v.dateRecuperation || '—' }}</td>
+            <td>{{ v.dateVente || '—' }}</td>
+            <td>{{ v.sejour ?? '—' }}</td>
+            <td>{{ v.encImp ? (v.encImp | number) + ' DH' : '—' }}</td>
+            <td>{{ v.prixAchat ? (v.prixAchat | number) + ' DH' : '—' }}</td>
+            <td>{{ v.prixExpert ? (v.prixExpert | number) + ' DH' : '—' }}</td>
+            <td>{{ v.vep ? (v.vep | number) + ' DH' : '—' }}</td>
+            <td>{{ v.difExp ? (v.difExp | number) + ' DH' : '—' }}</td>
+            <td>{{ v.acheteur || '—' }}</td>
             <td><span class="badge-statut" [class]="v.statut">{{ v.statut }}</span></td>
+            <td class="actions-cell">
+              <button class="btn-action btn-edit" (click)="ouvrirModification(v)" title="Modifier">✏️</button>
+              <button class="btn-action btn-delete" (click)="demanderSuppression(v)" title="Supprimer">🗑️</button>
+            </td>
           </tr>
           <tr *ngIf="filteredVehicules().length === 0">
-            <td colspan="9" class="state-message">Aucun véhicule ne correspond à votre recherche.</td>
+            <td colspan="20" class="state-message">Aucun véhicule ne correspond à votre recherche.</td>
           </tr>
         </tbody>
       </table>
+      </div>
+
+      <!-- Modale de confirmation suppression -->
+      <div *ngIf="vehiculeToDelete()" class="modal-overlay" (click)="annulerSuppression()">
+        <div class="modal-box" (click)="$event.stopPropagation()">
+          <h3>Confirmer la suppression</h3>
+          <p>
+            Voulez-vous vraiment supprimer le véhicule
+            <strong>{{ vehiculeToDelete()?.immatriculation }}</strong> ?
+            Cette action est irréversible.
+          </p>
+          <div class="modal-actions">
+            <button class="btn-cancel" (click)="annulerSuppression()" [disabled]="isDeleting()">
+              Annuler
+            </button>
+            <button class="btn-confirm-delete" (click)="confirmerSuppression()" [disabled]="isDeleting()">
+              {{ isDeleting() ? 'Suppression...' : 'Supprimer' }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modale de modification -->
+      <div *ngIf="vehiculeToEdit()" class="modal-overlay" (click)="annulerModification()">
+        <div class="modal-box modal-edit" (click)="$event.stopPropagation()">
+          <h3>Modifier le véhicule {{ vehiculeToEdit()?.immatriculation }}</h3>
+
+          <div *ngIf="editError()" class="error-box">{{ editError() }}</div>
+
+          <div class="edit-grid">
+            <label>
+              Immatriculation
+              <input type="text" [(ngModel)]="editForm.immatriculation" name="immatriculation" />
+            </label>
+            <label>
+              Contrat
+              <input type="text" [(ngModel)]="editForm.contrat" name="contrat" />
+            </label>
+            <label>
+              Produit
+              <input type="text" [(ngModel)]="editForm.produit" name="produit" />
+            </label>
+            <label>
+              Situation
+              <input type="text" [(ngModel)]="editForm.situation" name="situation" />
+            </label>
+            <label>
+              Marque | Modèle
+              <input type="text" [(ngModel)]="editForm.marqueModele" name="marqueModele" />
+            </label>
+            <label>
+              Carburant
+              <input type="text" [(ngModel)]="editForm.carburant" name="carburant" />
+            </label>
+            <label>
+              Kilométrage
+              <input type="text" [(ngModel)]="editForm.kilometrage" name="kilometrage" />
+            </label>
+            <label>
+              Nombre de clés
+              <input type="number" [(ngModel)]="editForm.nombreCles" name="nombreCles" />
+            </label>
+            <label>
+              Date MEC
+              <input type="date" [(ngModel)]="editForm.dateMec" name="dateMec" />
+            </label>
+            <label>
+              Date récupération
+              <input type="date" [(ngModel)]="editForm.dateRecuperation" name="dateRecuperation" />
+            </label>
+            <label>
+              Date vente
+              <input type="date" [(ngModel)]="editForm.dateVente" name="dateVente" />
+            </label>
+            <label>
+              Séjour
+              <input type="number" [(ngModel)]="editForm.sejour" name="sejour" />
+            </label>
+            <label>
+              Enc.Imp
+              <input type="number" [(ngModel)]="editForm.encImp" name="encImp" />
+            </label>
+            <label>
+              Prix achat
+              <input type="number" [(ngModel)]="editForm.prixAchat" name="prixAchat" />
+            </label>
+            <label>
+              Prix expert
+              <input type="number" [(ngModel)]="editForm.prixExpert" name="prixExpert" />
+            </label>
+            <label>
+              Vep
+              <input type="number" [(ngModel)]="editForm.vep" name="vep" />
+            </label>
+            <label>
+              Acheteur
+              <input type="text" [(ngModel)]="editForm.acheteur" name="acheteur" />
+            </label>
+            <label>
+              Statut
+              <select [(ngModel)]="editForm.statut" name="statut">
+                <option value="EN_STOCK">En stock</option>
+                <option value="EN_VENTE">En vente</option>
+                <option value="VENDU">Vendu</option>
+                <option value="NON_VENDU">Non vendu</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="modal-actions">
+            <button class="btn-cancel" (click)="annulerModification()" [disabled]="isSaving()">
+              Annuler
+            </button>
+            <button class="btn-save" (click)="sauvegarderModification()" [disabled]="isSaving()">
+              {{ isSaving() ? 'Enregistrement...' : 'Save' }}
+            </button>
+          </div>
+        </div>
+      </div>
+
     </div>
 
     <div *ngIf="activeTab() === 'import'" class="import-tab">
       <app-import-vehicules></app-import-vehicules>
+    </div>
+
+    <div *ngIf="activeTab() === 'ventes'" class="ventes-tab">
+      <app-ventes-planifiees></app-ventes-planifiees>
     </div>
 
   </div>

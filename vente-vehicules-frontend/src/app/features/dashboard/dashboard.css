@@ -204,29 +204,32 @@ header button:focus-visible {
 
 .badge-statut {
   display: inline-block;
-  padding: 4px 11px;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.3px;
-  border-radius: 20px;
-  text-transform: capitalize;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
 }
 
 .badge-statut.EN_STOCK {
-  background: var(--neutral-bg);
-  color: var(--neutral-text);
+  background-color: #e2e8f0;
+  color: #334155;
 }
 
 .badge-statut.EN_VENTE {
-  background: var(--warning-bg);
-  color: var(--warning-text);
+  background-color: #fef3c7;
+  color: #92400e;
 }
 
 .badge-statut.VENDU {
-  background: var(--success-bg);
-  color: var(--success-text);
+  background-color: #d1fae5;
+  color: #065f46;
 }
 
+.badge-statut.NON_VENDU {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
 /* ===== Responsive ===== */
 @media (max-width: 900px) {
   header {
@@ -335,5 +338,185 @@ header button:focus-visible {
   .search-input,
   .statut-select {
     width: 100%;
+  }
+}
+.table-wrapper {
+  overflow-x: auto;
+  width: 100%;
+}
+
+.vehicules-table {
+  min-width: 1600px;
+}
+/* ===== Actions & Boutons de tableau ===== */
+.actions-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-action {
+  border: none;
+  background: transparent;
+  color: var(--ink-soft);
+  cursor: pointer;
+  font-size: 16px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.btn-action:hover {
+  background-color: var(--steel-100);
+  color: var(--ink);
+}
+
+.btn-action:focus-visible {
+  outline: 2px solid var(--bronze-500);
+  outline-offset: 1px;
+}
+
+/* ===== Modale (Overlay & Boîte) ===== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(11, 21, 34, 0.6); /* Utilise la teinte navy-950 en transparence */
+  backdrop-filter: blur(2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modal-box {
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 28px;
+  max-width: 500px;
+  width: 100%;
+  box-shadow: 0 10px 25px rgba(11, 21, 34, 0.15);
+  font-family: var(--font-body);
+  color: var(--ink);
+}
+
+.modal-box h2, 
+.modal-box h3 {
+  font-family: var(--font-display);
+  color: var(--navy-900);
+  margin-top: 0;
+}
+
+.modal-edit {
+  max-width: 700px;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
+/* ===== Formulaire dans la Modale ===== */
+.edit-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin: 20px 0;
+}
+
+.edit-grid label {
+  display: flex;
+  flex-direction: column;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-soft);
+  gap: 6px;
+}
+
+.edit-grid input,
+.edit-grid select {
+  padding: 9px 12px;
+  font-family: var(--font-body);
+  font-size: 13.5px;
+  color: var(--ink);
+  background: #ffffff;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.edit-grid input:hover,
+.edit-grid select:hover {
+  border-color: var(--steel-400);
+}
+
+.edit-grid input:focus,
+.edit-grid select:focus {
+  border-color: var(--navy-700);
+  box-shadow: 0 0 0 3px rgba(22, 41, 63, 0.1);
+}
+
+/* ===== Actions / Boutons de la Modale ===== */
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.btn-cancel,
+.btn-confirm-delete,
+.btn-save {
+  padding: 9px 18px;
+  font-size: 13.5px;
+  font-weight: 600;
+  font-family: var(--font-body);
+  border-radius: 7px;
+  border: none;
+  cursor: pointer;
+  letter-spacing: 0.2px;
+  transition: background-color 0.15s ease, transform 0.05s ease;
+}
+
+.btn-cancel:active,
+.btn-confirm-delete:active,
+.btn-save:active {
+  transform: translateY(1px);
+}
+
+/* Bouton Annuler */
+.btn-cancel {
+  background: var(--steel-100);
+  color: var(--neutral-text);
+}
+
+.btn-cancel:hover {
+  background: var(--steel-200);
+  color: var(--ink);
+}
+
+/* Bouton Supprimer (Danger) */
+.btn-confirm-delete {
+  background: var(--error);
+  color: #ffffff;
+}
+
+.btn-confirm-delete:hover {
+  background: #a93226;
+}
+
+/* Bouton Sauvegarder (Primaire) */
+.btn-save {
+  background: var(--navy-900);
+  color: #ffffff;
+}
+
+.btn-save:hover {
+  background: var(--navy-800);
+}
+
+/* Responsiveness pour les petits écrans */
+@media (max-width: 600px) {
+  .edit-grid {
+    grid-template-columns: 1fr;
   }
 }

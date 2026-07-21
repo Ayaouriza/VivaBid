@@ -34,4 +34,11 @@ export class VehiculeService {
       responseType: 'blob'
     });
   }
+  updateVehicule(id: number, data: Partial<Vehicule>): Observable<Vehicule> {
+    return this.http.put<Vehicule>(`${this.apiUrl}/${id}`, data);
+  }
+
+  deleteVehicule(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
 }
