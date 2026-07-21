@@ -5,9 +5,12 @@ import com.example.demo.dto.VenteRequest;
 import com.example.demo.dto.VenteResponse;
 import com.example.demo.service.VenteService;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -34,9 +37,12 @@ public class VenteController {
     }
 
     @GetMapping("/vehicules-disponibles")
-    public ResponseEntity<List<VehiculeSimpleResponse>> getVehiculesDisponibles() {
-        return ResponseEntity.ok(venteService.getVehiculesDisponibles());
-    }
+public ResponseEntity<List<VehiculeSimpleResponse>> getVehiculesDisponibles(
+        @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateDebut,
+        @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateFin,
+        @RequestParam(required = false) Boolean chargeAujourdhui) {
+    return ResponseEntity.ok(venteService.getVehiculesDisponibles(dateDebut, dateFin, chargeAujourdhui));
+}
 
     @PostMapping("/{venteId}/vehicules/{vehiculeId}")
     public ResponseEntity<VenteResponse> ajouterVehicule(

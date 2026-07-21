@@ -11,6 +11,9 @@ import com.example.demo.repository.VenteRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Service
@@ -46,13 +49,28 @@ public class VenteService {
         return toResponse(saved);
     }
 
-    public List<VehiculeSimpleResponse> getVehiculesDisponibles() {
-        return vehiculeRepository.findVehiculesDisponiblesPourVente()
-                .stream()
-                .map(this::toSimpleResponse)
-                .toList();
+   public List<VehiculeSimpleResponse> getVehiculesDisponibles(LocalDate dateDebut, LocalDate dateFin, Boolean chargeAujourdhui) {
+    LocalDateTime debut = null;
+    LocalDateTime fin = null;
+
+    if (Boolean.TRUE.equals(chargeAujourdhui)) {
+        LocalDate aujourdhui = LocalDate.now();
+        debut = aujourdhui.atStartOfDay();
+        fin = aujourdhui.atTime(LocalTime.MAX);
+    } else {
+        if (dateDebut != null) {
+            debut = dateDebut.atStartOfDay();
+        }
+        if (dateFin != null) {
+            fin = dateFin.atTime(LocalTime.MAX);
+        }
     }
 
+    return vehiculeRepository.findVehiculesDisponiblesPourVente(debut, fin)
+            .stream()
+            .map(this::toSimpleResponse)
+            .toList();
+    }
     public VenteResponse ajouterVehicule(Long venteId, Long vehiculeId) {
         Vente vente = venteRepository.findById(venteId)
                 .orElseThrow(() -> new RuntimeException("Vente introuvable"));
