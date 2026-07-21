@@ -1,8 +1,9 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { VenteService } from '../../core/services/vente';
-import { Vente, VehiculeSimple } from '../../core/models/vente';
+import { Vente } from '../../core/models/vente';
 
 @Component({
   selector: 'app-ventes-planifiees',
@@ -21,12 +22,10 @@ export class VentesPlanifiees implements OnInit {
   nouvelleHeure = signal('');
   isCreating = signal(false);
 
-  showPopup = signal(false);
-  venteActive = signal<Vente | null>(null);
-  vehiculesDisponibles = signal<VehiculeSimple[]>([]);
-  isLoadingDisponibles = signal(false);
-
-  constructor(private venteService: VenteService) {}
+  constructor(
+    private venteService: VenteService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.loadVentes();
@@ -69,48 +68,13 @@ export class VentesPlanifiees implements OnInit {
     });
   }
 
-  ouvrirPopupAjout(vente: Vente): void {
-    this.venteActive.set(vente);
-    this.showPopup.set(true);
-    this.isLoadingDisponibles.set(true);
-
-    this.venteService.getVehiculesDisponibles().subscribe({
-      next: (data) => {
-        this.vehiculesDisponibles.set(data);
-        this.isLoadingDisponibles.set(false);
-      },
-      error: (err) => {
-        this.isLoadingDisponibles.set(false);
-        console.error(err);
-      }
-    });
-  }
-
-  fermerPopup(): void {
-    this.showPopup.set(false);
-    this.venteActive.set(null);
-  }
-
-  ajouterVehicule(vehiculeId: number): void {
-    const vente = this.venteActive();
-    if (!vente) return;
-
-    this.venteService.ajouterVehicule(vente.id, vehiculeId).subscribe({
-      next: (venteMaj) => {
-        this.venteActive.set(venteMaj);
-        this.vehiculesDisponibles.update(list => list.filter(v => v.id !== vehiculeId));
-        this.loadVentes();
-      },
-      error: (err) => console.error(err)
-    });
+  allerAjouterVehicules(vente: Vente): void {
+    this.router.navigate(['/ventes', vente.id, 'ajouter-vehicules']);
   }
 
   retirerVehicule(vente: Vente, vehiculeId: number): void {
     this.venteService.retirerVehicule(vente.id, vehiculeId).subscribe({
-      next: (venteMaj) => {
-        if (this.venteActive()?.id === vente.id) {
-          this.venteActive.set(venteMaj);
-        }
+      next: () => {
         this.loadVentes();
       },
       error: (err) => console.error(err)

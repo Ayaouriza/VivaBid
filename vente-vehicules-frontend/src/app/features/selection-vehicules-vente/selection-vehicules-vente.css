@@ -1,0 +1,241 @@
+/* --- Conteneur global --- */
+:host {
+  display: block;
+  background-color: #f8fafc;
+  min-height: 100vh;
+  padding: 1.5rem;
+  font-family: inherit;
+}
+
+.selection-container {
+  max-width: 1300px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* --- En-tête --- */
+.selection-header {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  border-left: 5px solid var(--bronze-500, #c5a059);
+}
+
+.btn-retour {
+  background: transparent;
+  border: none;
+  color: var(--navy-900, #0f172a);
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  transition: opacity 0.2s;
+}
+
+.btn-retour:hover {
+  opacity: 0.7;
+}
+
+.selection-header h2 {
+  margin: 0;
+  color: var(--navy-900, #0f172a);
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+.subtitle {
+  margin: 0.35rem 0 0 0;
+  color: #64748b;
+  font-size: 0.875rem;
+}
+
+/* --- Barre de filtres --- */
+.filters-bar {
+  background: white;
+  padding: 1rem 1.25rem;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  flex-wrap: wrap;
+}
+
+.search-input {
+  flex: 1;
+  min-width: 220px;
+  padding: 0.55rem 0.85rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  outline: none;
+}
+
+.search-input:focus, .statut-select:focus {
+  border-color: var(--navy-900, #0f172a);
+}
+
+.statut-select {
+  padding: 0.55rem 0.85rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background-color: white;
+  font-size: 0.875rem;
+  outline: none;
+}
+
+.checkbox-filter {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.875rem;
+  color: #334155;
+  cursor: pointer;
+  user-select: none;
+  font-weight: 500;
+  background-color: #f1f5f9;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+}
+
+.date-separator {
+  color: #94a3b8;
+  font-weight: bold;
+}
+
+.filters-bar input[type="date"] {
+  padding: 0.5rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  background-color: white;
+}
+
+.filters-bar input[type="date"]:disabled {
+  background-color: #f1f5f9;
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* --- Tableau --- */
+.table-wrapper {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  overflow-x: auto;
+}
+
+.vehicules-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.875rem;
+}
+
+.vehicules-table th {
+  background-color: var(--navy-900, #0f172a);
+  color: white;
+  padding: 0.85rem 1rem;
+  font-weight: 600;
+}
+
+.vehicules-table td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #e2e8f0;
+  color: #334155;
+  white-space: nowrap;
+}
+
+.vehicules-table tbody tr:hover {
+  background-color: #f8fafc;
+}
+
+/* --- Badges --- */
+.badge-id {
+  background-color: #e2e8f0;
+  color: #475569;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 0.75rem;
+}
+
+.badge-statut {
+  padding: 0.25rem 0.6rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.badge-statut.EN_STOCK { background-color: #dbeafe; color: #1e40af; }
+.badge-statut.EN_VENTE { background-color: #fef3c7; color: #92400e; }
+.badge-statut.VENDU { background-color: #dcfce7; color: #166534; }
+.badge-statut.NON_VENDU { background-color: #fee2e2; color: #991b1b; }
+
+/* --- Bouton d'action dans le tableau --- */
+.actions-cell {
+  text-align: center;
+}
+
+.btn-select {
+  background-color: var(--bronze-500, #c5a059);
+  color: white;
+  border: none;
+  padding: 0.45rem 0.85rem;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-select:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.btn-select:disabled {
+  background-color: #10b981;
+  color: white;
+  cursor: default;
+  opacity: 1;
+}
+
+/* --- Footer et Valider --- */
+.selection-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.5rem;
+}
+
+.btn-valider {
+  background-color: var(--navy-900, #0f172a);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-valider:hover {
+  background-color: #1e293b;
+}
+
+/* --- Messages d'état --- */
+.state-message {
+  text-align: center;
+  padding: 1.5rem;
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+.state-message.error {
+  color: #ef4444;
+}

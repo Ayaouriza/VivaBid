@@ -28,14 +28,14 @@
           <span class="vente-date">{{ vente.dateVente | date:'dd/MM/yyyy à HH:mm' }}</span>
           <span class="badge-statut" [class]="vente.statut">{{ vente.statut }}</span>
         </div>
-        <button class="btn-add-vehicule" (click)="ouvrirPopupAjout(vente)">
+        <button class="btn-add-vehicule" (click)="allerAjouterVehicules(vente)">
           + Ajouter des véhicules
         </button>
       </div>
 
       <div class="vente-vehicules" *ngIf="vente.vehicules.length > 0; else aucunVehicule">
         <div *ngFor="let v of vente.vehicules" class="vehicule-chip">
-          <span>{{ v.immatriculation }} — {{ v.marque }} {{ v.modele }}</span>
+          <span>{{ v.immatriculation }} — {{ v.marqueModele }}</span>
           <button class="btn-remove" (click)="retirerVehicule(vente, v.id)">×</button>
         </div>
       </div>
@@ -45,30 +45,6 @@
     </div>
 
     <div *ngIf="ventes().length === 0" class="state-message">Aucune vente planifiée pour le moment.</div>
-  </div>
-
-  <div class="popup-overlay" *ngIf="showPopup()" (click)="fermerPopup()">
-    <div class="popup-content" (click)="$event.stopPropagation()">
-      <div class="popup-header">
-        <h3>Sélectionner des véhicules</h3>
-        <button class="btn-close" (click)="fermerPopup()">×</button>
-      </div>
-
-      <div *ngIf="isLoadingDisponibles()" class="state-message">Chargement...</div>
-
-      <div class="popup-list" *ngIf="!isLoadingDisponibles()">
-        <div *ngFor="let v of vehiculesDisponibles()" class="popup-item">
-          <div class="popup-item-info">
-            <span class="popup-item-title">{{ v.immatriculation }} — {{ v.marque }} {{ v.modele }}</span>
-            <span class="popup-item-sub">{{ v.ville || '—' }} · {{ v.prixExpert ? (v.prixExpert | number) + ' DH' : '—' }}</span>
-          </div>
-          <button class="btn-select" (click)="ajouterVehicule(v.id)">Ajouter</button>
-        </div>
-        <div *ngIf="vehiculesDisponibles().length === 0" class="state-message">
-          Aucun véhicule disponible pour le moment.
-        </div>
-      </div>
-    </div>
   </div>
 
 </div>

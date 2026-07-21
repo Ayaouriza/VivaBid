@@ -1,0 +1,99 @@
+<div class="selection-container">
+
+  <div class="selection-header">
+    <button class="btn-retour" (click)="validerSelection()">← Retour à la vente</button>
+    <h2>Ajouter des véhicules à la vente</h2>
+    <p class="subtitle" *ngIf="vente() as v">
+      Vente du {{ v.dateVente | date:'dd/MM/yyyy à HH:mm' }} —
+      {{ v.vehicules.length }} véhicule(s) déjà ajouté(s)
+    </p>
+  </div>
+
+  <div class="filters-bar">
+    <input
+      type="text"
+      class="search-input"
+      placeholder="Rechercher (immatriculation, marque/modèle)..."
+      (input)="onSearchChange($event)"
+    />
+
+    <select class="statut-select" (change)="onStatutFilterChange($event)">
+      <option value="TOUS">Tous les statuts</option>
+      <option value="EN_STOCK">En stock</option>
+      <option value="EN_VENTE">En vente</option>
+      <option value="VENDU">Vendu</option>
+      <option value="NON_VENDU">Non vendu</option>
+    </select>
+
+    <label class="checkbox-filter">
+      <input
+        type="checkbox"
+        [checked]="chargeAujourdhui()"
+        (change)="toggleChargeAujourdhui()"
+      />
+      Chargé aujourd'hui
+    </label>
+
+    <input
+      type="date"
+      [ngModel]="dateDebut()"
+      (ngModelChange)="onDateDebutChange($event)"
+      [disabled]="chargeAujourdhui()"
+      name="dateDebut"
+    />
+    <span class="date-separator">→</span>
+    <input
+      type="date"
+      [ngModel]="dateFin()"
+      (ngModelChange)="onDateFinChange($event)"
+      [disabled]="chargeAujourdhui()"
+      name="dateFin"
+    />
+  </div>
+
+  <div *ngIf="isLoading()" class="state-message">Chargement...</div>
+  <div *ngIf="errorMessage()" class="state-message error">{{ errorMessage() }}</div>
+
+  <div class="table-wrapper">
+    <table *ngIf="!isLoading() && !errorMessage()" class="vehicules-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Immat.</th>
+          <th>Marque | Modèle</th>
+          <th>Prix expert</th>
+          <th>Statut</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let v of filteredVehicules()">
+          <td><span class="badge-id">{{ v.id }}</span></td>
+          <td>{{ v.immatriculation }}</td>
+          <td>{{ v.marqueModele }}</td>
+          <td>{{ v.prixExpert ? (v.prixExpert | number) + ' DH' : '—' }}</td>
+          <td><span class="badge-statut" [class]="v.statut">{{ v.statut }}</span></td>
+          <td class="actions-cell">
+            <button
+              class="btn-select"
+              [disabled]="estDejaAjoute(v.id)"
+              (click)="ajouterVehicule(v.id)"
+            >
+              {{ estDejaAjoute(v.id) ? 'Ajouté ✓' : '+ Ajouter' }}
+            </button>
+          </td>
+        </tr>
+        <tr *ngIf="filteredVehicules().length === 0">
+          <td colspan="6" class="state-message">Aucun véhicule disponible ne correspond aux filtres.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="selection-footer">
+    <button class="btn-valider" (click)="validerSelection()">
+      Valider la sélection ({{ vente()?.vehicules?.length ?? 0 }} véhicule(s))
+    </button>
+  </div>
+
+</div>

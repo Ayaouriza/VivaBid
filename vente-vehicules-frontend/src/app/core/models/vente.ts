@@ -1,10 +1,10 @@
 export interface VehiculeSimple {
   id: number;
   immatriculation: string;
-  ville: string | null;
-  marque: string;
-  modele: string;
+  marqueModele: string;
   prixExpert: number | null;
+  statut: 'EN_STOCK' | 'EN_VENTE' | 'NON_VENDU' | 'VENDU';
+  dateCreation: string;
 }
 
 export interface Vente {

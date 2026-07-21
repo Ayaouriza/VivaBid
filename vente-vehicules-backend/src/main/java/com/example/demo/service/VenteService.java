@@ -134,7 +134,9 @@ public class VenteService {
                 vehicule.getId(),
                 vehicule.getImmatriculation(),
                 vehicule.getMarqueModele(),
-                vehicule.getPrixExpert()
+                vehicule.getPrixExpert(),
+                vehicule.getStatut(),
+                vehicule.getDateCreation() 
         );
     }
 }

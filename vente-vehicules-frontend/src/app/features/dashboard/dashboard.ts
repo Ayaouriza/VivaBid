@@ -1,6 +1,6 @@
 import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../core/services/auth';
 import { VehiculeService } from '../../core/services/vehicule';
 import { Vehicule } from '../../core/models/vehicule';
@@ -46,16 +46,25 @@ export class Dashboard implements OnInit {
   constructor(
     private authService: AuthService,
     private vehiculeService: VehiculeService,
-    private router: Router
+    private router: Router,
+    private route : ActivatedRoute
   ) {}
 
   ngOnInit(): void {
     this.username = this.authService.getUsername();
     this.role = this.authService.getRole();
 
-    if (this.role === Role.AGENT_SAISIE) {
-      this.loadVehicules();
-    }
+    this.route.queryParams.subscribe(params => {
+      if (params['tab'] === 'ventes') {
+        this.setActiveTab('ventes');
+      } else if (params['tab'] === 'import') {
+        this.setActiveTab('import');
+      } else {
+        if (this.role === Role.AGENT_SAISIE) {
+          this.loadVehicules();
+        }
+      }
+    });
   }
 
   setActiveTab(tab: 'inventaire' | 'import' | 'ventes'): void {
