@@ -2,9 +2,10 @@ import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { forkJoin, of } from 'rxjs';
 import { VenteService } from '../../core/services/vente';
-import { Vente, VehiculeSimple } from '../../core/models/vente';
-
+import { Vente } from '../../core/models/vente';
+import { Vehicule } from '../../core/models/vehicule';
 @Component({
   selector: 'app-selection-vehicules-vente',
   standalone: true,
@@ -17,15 +18,19 @@ export class SelectionVehiculesVente implements OnInit {
   venteId!: number;
   vente = signal<Vente | null>(null);
 
-  vehiculesDisponibles = signal<VehiculeSimple[]>([]);
+  vehiculesDisponibles = signal<Vehicule[]>([]);
   isLoading = signal(false);
   errorMessage = signal('');
+  isValidating = signal(false);
 
   searchTerm = signal('');
   statutFilter = signal<'TOUS' | 'EN_STOCK' | 'NON_VENDU' | 'EN_VENTE' | 'VENDU'>('TOUS');
   chargeAujourdhui = signal(false);
   dateDebut = signal('');
   dateFin = signal('');
+
+  // IDs des véhicules cochés, pas encore envoyés au backend
+  selectionIds = signal<Set<number>>(new Set());
 
   filteredVehicules = computed(() => {
     const term = this.searchTerm().toLowerCase().trim();
@@ -41,6 +46,8 @@ export class SelectionVehiculesVente implements OnInit {
       return matchStatut && matchSearch;
     });
   });
+
+  nombreSelectionnes = computed(() => this.selectionIds().size);
 
   constructor(
     private route: ActivatedRoute,
@@ -112,21 +119,54 @@ export class SelectionVehiculesVente implements OnInit {
     this.loadVehiculesDisponibles();
   }
 
-  ajouterVehicule(vehiculeId: number): void {
-    this.venteService.ajouterVehicule(this.venteId, vehiculeId).subscribe({
-      next: (venteMaj) => {
-        this.vente.set(venteMaj);
-        this.vehiculesDisponibles.update(list => list.filter(v => v.id !== vehiculeId));
-      },
-      error: (err) => console.error(err)
-    });
-  }
-
   estDejaAjoute(vehiculeId: number): boolean {
     return this.vente()?.vehicules.some(v => v.id === vehiculeId) ?? false;
   }
 
- validerSelection(): void {
-  this.router.navigate(['/dashboard'], { queryParams: { tab: 'ventes' } });
-}
+  estCoche(vehiculeId: number): boolean {
+    return this.selectionIds().has(vehiculeId);
+  }
+
+  toggleSelection(vehiculeId: number): void {
+    if (this.estDejaAjoute(vehiculeId)) return;
+
+    this.selectionIds.update(set => {
+      const nouveauSet = new Set(set);
+      if (nouveauSet.has(vehiculeId)) {
+        nouveauSet.delete(vehiculeId);
+      } else {
+        nouveauSet.add(vehiculeId);
+      }
+      return nouveauSet;
+    });
+  }
+
+  validerSelection(): void {
+    const ids = Array.from(this.selectionIds());
+
+    if (ids.length === 0) {
+      this.router.navigate(['/dashboard'], { queryParams: { tab: 'ventes' } });
+      return;
+    }
+
+    this.isValidating.set(true);
+
+    const appels = ids.map(id => this.venteService.ajouterVehicule(this.venteId, id));
+
+    forkJoin(appels).subscribe({
+      next: () => {
+        this.isValidating.set(false);
+        this.router.navigate(['/dashboard'], { queryParams: { tab: 'ventes' } });
+      },
+      error: (err) => {
+        console.error(err);
+        this.isValidating.set(false);
+        this.errorMessage.set("Erreur lors de l'ajout de certains véhicules.");
+      }
+    });
+  }
+
+  annuler(): void {
+    this.router.navigate(['/dashboard'], { queryParams: { tab: 'ventes' } });
+  }
 }

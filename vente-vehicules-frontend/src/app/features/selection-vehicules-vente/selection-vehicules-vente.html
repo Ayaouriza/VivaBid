@@ -1,7 +1,7 @@
 <div class="selection-container">
 
   <div class="selection-header">
-    <button class="btn-retour" (click)="validerSelection()">← Retour à la vente</button>
+    <button class="btn-retour" (click)="annuler()">← Retour à la vente</button>
     <h2>Ajouter des véhicules à la vente</h2>
     <p class="subtitle" *ngIf="vente() as v">
       Vente du {{ v.dateVente | date:'dd/MM/yyyy à HH:mm' }} —
@@ -58,41 +58,84 @@
     <table *ngIf="!isLoading() && !errorMessage()" class="vehicules-table">
       <thead>
         <tr>
+          <th></th>
           <th>ID</th>
           <th>Immat.</th>
+          <th>Contrat</th>
+          <th>Produit</th>
+          <th>Situation</th>
           <th>Marque | Modèle</th>
+          <th>Carburant</th>
+          <th>Km</th>
+          <th># Clés</th>
+          <th>Date MEC</th>
+          <th>Date récup.</th>
+          <th>Date vente</th>
+          <th>Séjour</th>
+          <th>Enc.Imp</th>
+          <th>Prix achat</th>
           <th>Prix expert</th>
+          <th>Vep</th>
+          <th>Dif. Exp</th>
+          <th>Acheteur</th>
           <th>Statut</th>
-          <th>Action</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let v of filteredVehicules()">
+        <tr
+          *ngFor="let v of filteredVehicules()"
+          [class.row-selected]="estCoche(v.id)"
+          [class.row-disabled]="estDejaAjoute(v.id)"
+          (click)="toggleSelection(v.id)"
+        >
+          <td class="checkbox-cell">
+            <input
+              type="checkbox"
+              [checked]="estDejaAjoute(v.id) || estCoche(v.id)"
+              [disabled]="estDejaAjoute(v.id)"
+              (click)="$event.stopPropagation()"
+              (change)="toggleSelection(v.id)"
+            />
+          </td>
           <td><span class="badge-id">{{ v.id }}</span></td>
           <td>{{ v.immatriculation }}</td>
+          <td>{{ v.contrat || '—' }}</td>
+          <td>{{ v.produit || '—' }}</td>
+          <td>{{ v.situation || '—' }}</td>
           <td>{{ v.marqueModele }}</td>
+          <td>{{ v.carburant || '—' }}</td>
+          <td>{{ v.kilometrage || '—' }}</td>
+          <td>{{ v.nombreCles ?? '—' }}</td>
+          <td>{{ v.dateMec || '—' }}</td>
+          <td>{{ v.dateRecuperation || '—' }}</td>
+          <td>{{ v.dateVente || '—' }}</td>
+          <td>{{ v.sejour ?? '—' }}</td>
+          <td>{{ v.encImp ? (v.encImp | number) + ' DH' : '—' }}</td>
+          <td>{{ v.prixAchat ? (v.prixAchat | number) + ' DH' : '—' }}</td>
           <td>{{ v.prixExpert ? (v.prixExpert | number) + ' DH' : '—' }}</td>
-          <td><span class="badge-statut" [class]="v.statut">{{ v.statut }}</span></td>
-          <td class="actions-cell">
-            <button
-              class="btn-select"
-              [disabled]="estDejaAjoute(v.id)"
-              (click)="ajouterVehicule(v.id)"
-            >
-              {{ estDejaAjoute(v.id) ? 'Ajouté ✓' : '+ Ajouter' }}
-            </button>
+          <td>{{ v.vep ? (v.vep | number) + ' DH' : '—' }}</td>
+          <td>{{ v.difExp ? (v.difExp | number) + ' DH' : '—' }}</td>
+          <td>{{ v.acheteur || '—' }}</td>
+          <td>
+            <span class="badge-statut" [class]="v.statut">{{ v.statut }}</span>
+            <span *ngIf="estDejaAjoute(v.id)" class="badge-ajoute">Déjà ajouté</span>
           </td>
         </tr>
         <tr *ngIf="filteredVehicules().length === 0">
-          <td colspan="6" class="state-message">Aucun véhicule disponible ne correspond aux filtres.</td>
+          <td colspan="20" class="state-message">Aucun véhicule disponible ne correspond aux filtres.</td>
         </tr>
       </tbody>
     </table>
   </div>
 
   <div class="selection-footer">
-    <button class="btn-valider" (click)="validerSelection()">
-      Valider la sélection ({{ vente()?.vehicules?.length ?? 0 }} véhicule(s))
+    <span class="selection-count">{{ nombreSelectionnes() }} véhicule(s) sélectionné(s)</span>
+    <button
+      class="btn-valider"
+      [disabled]="isValidating()"
+      (click)="validerSelection()"
+    >
+      {{ isValidating() ? 'Ajout en cours...' : 'Valider la sélection' }}
     </button>
   </div>
 

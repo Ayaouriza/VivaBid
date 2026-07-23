@@ -2,13 +2,14 @@ import { Injectable, signal } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Vente, VehiculeSimple } from '../models/vente';
-
+import { Vehicule } from '../models/vehicule';
+import { environment } from '../../../environments/environment';
 @Injectable({
   providedIn: 'root'
 })
 export class VenteService {
 
-  private readonly apiUrl = 'http://localhost:8080/api/ventes';
+  private readonly apiUrl = `${environment.apiUrl}/ventes`;
 
   // --- État temporaire de la vente en cours de création ---
   nouvelleDateVente = signal('');
@@ -31,7 +32,7 @@ export class VenteService {
     return this.http.post<Vente>(this.apiUrl, { dateVente });
   }
 
-  getVehiculesDisponibles(dateDebut?: string, dateFin?: string, chargeAujourdhui?: boolean): Observable<VehiculeSimple[]> {
+  getVehiculesDisponibles(dateDebut?: string, dateFin?: string, chargeAujourdhui?: boolean): Observable<Vehicule[]> {
     let params = new HttpParams();
     if (chargeAujourdhui) {
       params = params.set('chargeAujourdhui', 'true');
@@ -39,8 +40,8 @@ export class VenteService {
       if (dateDebut) params = params.set('dateDebut', dateDebut);
       if (dateFin) params = params.set('dateFin', dateFin);
     }
-    return this.http.get<VehiculeSimple[]>(`${this.apiUrl}/vehicules-disponibles`, { params });
-  }
+    return this.http.get<Vehicule[]>(`${this.apiUrl}/vehicules-disponibles`, { params });
+}
 
   ajouterVehicule(venteId: number, vehiculeId: number): Observable<Vente> {
     return this.http.post<Vente>(`${this.apiUrl}/${venteId}/vehicules/${vehiculeId}`, {});

@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.VehiculeResponse;
 import com.example.demo.dto.VehiculeSimpleResponse;
 import com.example.demo.dto.VenteRequest;
 import com.example.demo.dto.VenteResponse;
@@ -49,7 +50,7 @@ public class VenteService {
         return toResponse(saved);
     }
 
-   public List<VehiculeSimpleResponse> getVehiculesDisponibles(LocalDate dateDebut, LocalDate dateFin, Boolean chargeAujourdhui) {
+   public List<VehiculeResponse> getVehiculesDisponibles(LocalDate dateDebut, LocalDate dateFin, Boolean chargeAujourdhui) {
     LocalDateTime debut = null;
     LocalDateTime fin = null;
 
@@ -68,7 +69,7 @@ public class VenteService {
 
     return vehiculeRepository.findVehiculesDisponiblesPourVente(debut, fin)
             .stream()
-            .map(this::toSimpleResponse)
+            .map(this::toVehiculeResponse)
             .toList();
     }
     public VenteResponse ajouterVehicule(Long venteId, Long vehiculeId) {
@@ -139,4 +140,30 @@ public class VenteService {
                 vehicule.getDateCreation() 
         );
     }
+    private VehiculeResponse toVehiculeResponse(Vehicule vehicule) {
+    return new VehiculeResponse(
+            vehicule.getId(),
+            vehicule.getImmatriculation(),
+            vehicule.getContrat(),
+            vehicule.getProduit(),
+            vehicule.getSituation(),
+            vehicule.getMarqueModele(),
+            vehicule.getCarburant(),
+            vehicule.getKilometrage(),
+            vehicule.getNombreCles(),
+            vehicule.getDateMec(),
+            vehicule.getDateRecuperation(),
+            vehicule.getDateVente(),
+            vehicule.getSejour(),
+            vehicule.getEncImp(),
+            vehicule.getPrixAchat(),
+            vehicule.getPrixExpert(),
+            vehicule.getVep(),
+            vehicule.getDifExp(),
+            vehicule.getAcheteur(),
+            vehicule.getStatut(),
+            vehicule.getDocsJustificatifsPath(),
+            vehicule.getDateCreation()
+    );
+}
 }

@@ -1,6 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.VehiculeSimpleResponse;
+import com.example.demo.dto.VehiculeResponse;
 import com.example.demo.dto.VenteRequest;
 import com.example.demo.dto.VenteResponse;
 import com.example.demo.service.VenteService;
@@ -37,7 +37,7 @@ public class VenteController {
     }
 
     @GetMapping("/vehicules-disponibles")
-public ResponseEntity<List<VehiculeSimpleResponse>> getVehiculesDisponibles(
+public ResponseEntity<List<VehiculeResponse>> getVehiculesDisponibles(
         @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateDebut,
         @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateFin,
         @RequestParam(required = false) Boolean chargeAujourdhui) {

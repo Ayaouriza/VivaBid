@@ -1,3 +1,5 @@
+import { Vehicule } from './vehicule';
+
 export interface VehiculeSimple {
   id: number;
   immatriculation: string;
@@ -14,3 +16,5 @@ export interface Vente {
   vehicules: VehiculeSimple[];
   dateCreation: string;
 }
+
+export type VehiculeDisponible = Vehicule;
